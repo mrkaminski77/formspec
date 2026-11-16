@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FormSpec Studio — Prototype IDE</title>
+  <link rel="stylesheet" href="/ide.css" />
+</head>
+<body>
+  <div id="auth-gate" class="auth-gate hidden">
+    <div class="auth-card">
+      <h1 id="auth-title">FormSpec Studio</h1>
+      <p id="auth-subtitle" class="muted"></p>
+      <form id="auth-form">
+        <label class="field-label">
+          <span>Username</span>
+          <input id="auth-username" type="text" value="superuser" required />
+        </label>
+        <label class="field-label">
+          <span>Password</span>
+          <input id="auth-password" type="password" minlength="4" placeholder="Enter password..." required />
+        </label>
+        <div id="auth-error" class="error-banner hidden"></div>
+        <button id="auth-submit" type="submit" class="btn btn-primary full-width">Continue</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="workspace" class="workspace hidden">
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="brand">FormSpec Studio</span>
+        <span class="badge" id="active-user-badge"></span>
+      </div>
+      <div class="topbar-right">
+        <div id="git-controls" class="git-controls">
+          <select id="git-branch-select" class="topbar-select" title="Switch Git branch" disabled>
+            <option value="">Git: unconfigured</option>
+          </select>
+          <button id="btn-git-publish" type="button" class="btn btn-secondary" disabled title="Publish branch files to database">Publish Branch</button>
+          <button id="btn-git-push" type="button" class="btn btn-secondary" disabled title="Commit DB edits and push branch">Push</button>
+        </div>
+        <button id="btn-open-package" class="btn btn-primary">Package</button>
+        <button id="btn-open-map" class="btn btn-secondary">Map</button>
+        <button id="btn-open-sql" class="btn btn-secondary">SQL</button>
+        <button id="btn-open-rbac" class="btn btn-secondary">Permissions</button>
+        <details id="admin-menu" class="topbar-menu hidden">
+          <summary class="btn btn-secondary">Database ▾</summary>
+          <div class="topbar-menu-list">
+            <button id="btn-wipe-db" type="button" class="topbar-menu-item danger">Wipe &amp; Re-initialize DB</button>
+          </div>
+        </details>
+        <button id="btn-logout" class="btn btn-secondary">Sign Out</button>
+      </div>
+    </header>
+
+    <main class="panes">
+      <aside class="sidebar">
+        <details open class="panel-section">
+          <summary class="panel-header">
+            <span class="panel-title-wrap"><span class="caret">▸</span><h2>Entities</h2></span>
+            <button id="btn-new-entity" type="button" class="btn btn-small btn-primary">+ Entity</button>
+          </summary>
+          <div id="entities-list" class="tree-list"></div>
+        </details>
+
+        <details open class="panel-section">
+          <summary class="panel-header">
+            <span class="panel-title-wrap"><span class="caret">▸</span><h2>Forms</h2></span>
+            <button id="btn-new-form" type="button" class="btn btn-small btn-secondary">+ Blank</button>
+          </summary>
+          <div id="forms-list" class="tree-list"></div>
+        </details>
+
+        <details open class="panel-section">
+          <summary class="panel-header">
+            <span class="panel-title-wrap"><span class="caret">▸</span><h2>Server Actions</h2></span>
+            <button id="btn-new-server-action" type="button" class="btn btn-small btn-secondary">+ Action</button>
+          </summary>
+          <div id="server-actions-list" class="tree-list"></div>
+        </details>
+
+        <details open class="panel-section">
+          <summary class="panel-header">
+            <span class="panel-title-wrap"><span class="caret">▸</span><h2>Client Actions</h2></span>
+            <button id="btn-new-client-action" type="button" class="btn btn-small btn-secondary">+ Action</button>
+          </summary>
+          <div id="client-actions-list" class="tree-list"></div>
+        </details>
+
+        <details open class="panel-section">
+          <summary class="panel-header">
+            <span class="panel-title-wrap"><span class="caret">▸</span><h2>Server Modules</h2></span>
+            <button id="btn-new-server-module" type="button" class="btn btn-small btn-secondary">+ Module</button>
+          </summary>
+          <div id="server-modules-list" class="tree-list"></div>
+        </details>
+
+        <details open class="panel-section">
+          <summary class="panel-header">
+            <span class="panel-title-wrap"><span class="caret">▸</span><h2>Client Modules</h2></span>
+            <button id="btn-new-client-module" type="button" class="btn btn-small btn-secondary">+ Module</button>
+          </summary>
+          <div id="client-modules-list" class="tree-list"></div>
+        </details>
+      </aside>
+
+      <section class="editor-pane">
+        <div class="pane-toolbar">
+          <div class="toolbar-title">
+            <strong id="editor-form-title">No item selected</strong>
+            <span id="editor-dirty" class="dirty-dot hidden" title="Unsaved changes">●</span>
+          </div>
+          <div class="toolbar-actions">
+            <button id="btn-item-meta" class="btn btn-secondary hidden">Settings</button>
+            <button id="btn-save-form" class="btn btn-primary" disabled>Save</button>
+            <button id="btn-export-form" class="btn btn-secondary" disabled>Export Actions</button>
+            <button id="btn-delete-form" class="btn btn-danger" disabled>Delete</button>
+          </div>
+        </div>
+        <textarea id="code-editor" class="code-editor" spellcheck="false" placeholder="Select a form, action, or module from the sidebar to edit..."></textarea>
+        <div id="diagnostics-bar" class="diagnostics-bar">Ready</div>
+      </section>
+
+      <section class="preview-pane">
+        <div class="pane-toolbar">
+          <div class="preview-controls">
+            <label>
+              <span>Formatter</span>
+              <select id="select-formatter"></select>
+            </label>
+            <label>
+              <span>CSS Theme</span>
+              <select id="select-theme"></select>
+            </label>
+            <label>
+              <span>Preview Role</span>
+              <select id="select-role"></select>
+            </label>
+          </div>
+        </div>
+        <iframe id="preview-frame" class="preview-frame" title="FormSpec Live Preview"></iframe>
+        <pre id="preview-code" class="preview-code hidden"></pre>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div id="modal-card" class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Modal</h3>
+        <button id="modal-close" class="btn btn-small btn-secondary">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="sidebar-hover-card" class="hover-card hidden" role="tooltip"></div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

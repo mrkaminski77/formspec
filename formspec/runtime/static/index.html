@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FormSpec Application</title>
+  <link id="theme-css" rel="stylesheet" href="/themes/default.css" />
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <div class="app-topbar">
+      <div class="app-brand">FormSpec App</div>
+      <div class="app-auth">
+        <span id="user-badge" class="app-badge">anon</span>
+        <button id="btn-auth" type="button" class="app-btn hidden">Sign In</button>
+      </div>
+    </div>
+
+    <div id="status-banner" class="app-banner hidden"></div>
+    <div id="app-header-slot"></div>
+    <main id="app-form-slot"></main>
+  </div>
+
+  <div id="login-modal" class="app-modal hidden">
+    <div class="app-modal-card">
+      <h3>Sign In</h3>
+      <form id="login-form">
+        <label>Username <input id="login-username" required /></label>
+        <label>Password <input id="login-password" type="password" required /></label>
+        <div id="login-err" class="app-banner error hidden"></div>
+        <div class="app-modal-actions">
+          <button type="button" id="login-cancel" class="app-btn">Cancel</button>
+          <button type="submit" class="app-btn primary">Sign In</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

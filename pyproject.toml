@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "formspec"
+version = "0.1.0"
+description = "Database-to-FormSpec (.fspec) and permission-enforcing server action generator"
+readme = "SPEC.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.1"]
+
+[project.scripts]
+formspec = "formspec.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["formspec*"]
+
+[tool.setuptools.package-data]
+"formspec.ide" = ["static/*", "themes/*.css"]
+"formspec.runtime" = ["static/*"]
